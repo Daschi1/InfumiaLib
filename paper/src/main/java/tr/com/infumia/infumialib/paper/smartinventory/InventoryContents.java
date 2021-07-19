@@ -1043,8 +1043,7 @@ public interface InventoryContents {
    */
   @NotNull
   default InventoryContents set(final int index, @Nullable final Icon item) {
-    final var columnCount = this.page().column();
-    return this.set(index / columnCount, index % columnCount, item);
+    return this.set(SlotPos.of(index), item);
   }
 
   /**
