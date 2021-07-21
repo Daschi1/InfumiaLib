@@ -3,6 +3,7 @@ package tr.com.infumia.infumialib.paper.bukkititembuilder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Optional;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BannerMeta;
 import org.bukkit.inventory.meta.BookMeta;
@@ -291,10 +292,31 @@ public interface Buildable<X extends Buildable<X, T>, T extends ItemMeta> {
     }
     Optional.ofNullable(itemStack.getItemMeta()).ifPresent(itemMeta -> {
       if (itemMeta.hasDisplayName()) {
-        data.add(Keys.DISPLAY_NAME_KEY, XColor.deColorize(itemMeta.getDisplayName()), String.class);
+        try {
+          final var component = itemMeta.displayName();
+          if (component != null) {
+            data.add(Keys.DISPLAY_NAME_KEY, MiniMessage.get().serialize(component), String.class);
+          }
+        } catch (final Exception e) {
+          data.add(Keys.DISPLAY_NAME_KEY, XColor.deColorize(itemMeta.getDisplayName()), String.class);
+        }
       }
-      if (itemMeta.hasLore() && itemMeta.getLore() != null) {
-        data.addAsCollection(Keys.LORE_KEY, XColor.deColorize(itemMeta.getLore()), String.class);
+      if (itemMeta.hasLore()) {
+        try {
+          final var lore = itemMeta.lore();
+          if (lore != null) {
+            final var miniMessage = MiniMessage.get();
+            final var list = new ArrayList<String>();
+            for (final var component : lore) {
+              list.add(miniMessage.serialize(component));
+            }
+            data.addAsCollection(Keys.LORE_KEY, list, String.class);
+          }
+        } catch (final Exception e) {
+          if (itemMeta.getLore() != null) {
+            data.addAsCollection(Keys.LORE_KEY, XColor.deColorize(itemMeta.getLore()), String.class);
+          }
+        }
       }
       final var flags = itemMeta.getItemFlags();
       if (!flags.isEmpty()) {

@@ -17,6 +17,8 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Material;
 import org.bukkit.attribute.Attribute;
 import org.bukkit.attribute.AttributeModifier;
@@ -81,8 +83,7 @@ public abstract class Builder<X extends Builder<X, T>, T extends ItemMeta> imple
    * @return a newly created item meta deserializer.
    */
   @NotNull
-  public static <X extends Builder<X, ?>> Builder.ItemMetaDeserializer<X> getItemMetaDeserializer(
-    @NotNull final X builder) {
+  public static <X extends Builder<X, ?>> ItemMetaDeserializer<X> getItemMetaDeserializer(@NotNull final X builder) {
     return new ItemMetaDeserializer<>(builder);
   }
 
@@ -359,6 +360,34 @@ public abstract class Builder<X extends Builder<X, T>, T extends ItemMeta> imple
   }
 
   /**
+   * adds lore to the item.
+   *
+   * @param lore the lore to add.
+   *
+   * @return {@code this} for builder chain.
+   */
+  @NotNull
+  public final X addLoreAsComponent(@NotNull final Component... lore) {
+    return this.addLoreAsComponent(List.of(lore));
+  }
+
+  /**
+   * adds lore to the item.
+   *
+   * @param lore the lore to add.
+   *
+   * @return {@code this} for builder chain.
+   */
+  @NotNull
+  public final X addLoreAsComponent(@NotNull final List<Component> lore) {
+    final var join = Optional.ofNullable(this.itemMeta.lore())
+      .orElse(new ArrayList<>());
+    join.addAll(lore);
+    this.itemMeta.lore(join);
+    return this.getSelf();
+  }
+
+  /**
    * adds unsafe enchantment to the item.
    *
    * @param enchantments the enchantments to add.
@@ -508,13 +537,6 @@ public abstract class Builder<X extends Builder<X, T>, T extends ItemMeta> imple
     return this.getSelf();
   }
 
-  /**
-   * sets item instance itself.
-   *
-   * @param itemStack the item stack to set.
-   *
-   * @return {@code this} for builder chain.
-   */
   @NotNull
   @Override
   public final X setItemStack(@NotNull final ItemStack itemStack) {
@@ -601,6 +623,31 @@ public abstract class Builder<X extends Builder<X, T>, T extends ItemMeta> imple
   }
 
   /**
+   * sets lore to the item.
+   *
+   * @param lore the lore to add.
+   *
+   * @return {@code this} for builder chain.
+   */
+  @NotNull
+  public final X setLoreAsComponent(@NotNull final Component... lore) {
+    return this.setLoreAsComponent(List.of(lore));
+  }
+
+  /**
+   * sets lore to the item.
+   *
+   * @param lore the lore to add.
+   *
+   * @return {@code this} for builder chain.
+   */
+  @NotNull
+  public final X setLoreAsComponent(@NotNull final List<Component> lore) {
+    this.itemMeta.lore(lore);
+    return this.getSelf();
+  }
+
+  /**
    * sets material of the item.
    *
    * @param material the material to set.
@@ -636,6 +683,19 @@ public abstract class Builder<X extends Builder<X, T>, T extends ItemMeta> imple
   @NotNull
   public final X setName(@NotNull final String name, final boolean colored) {
     this.itemMeta.setDisplayName(colored ? XColor.colorize(name) : name);
+    return this.getSelf();
+  }
+
+  /**
+   * sets name of the item.
+   *
+   * @param name the name to set.
+   *
+   * @return {@code this} for builder chain.
+   */
+  @NotNull
+  public final X setNameAsComponent(@NotNull final Component name) {
+    this.itemMeta.displayName(name);
     return this.getSelf();
   }
 
@@ -714,12 +774,25 @@ public abstract class Builder<X extends Builder<X, T>, T extends ItemMeta> imple
         data.get(Keys.SKULL_TEXTURE_KEY, String.class).ifPresent(s ->
           SkullUtils.applySkin(itemMeta, s));
       }
-      data.get(Keys.DISPLAY_NAME_KEY, String.class)
-        .map(XColor::colorize)
-        .ifPresent(this.builder::setName);
-      data.getAsCollection(Keys.LORE_KEY, String.class)
-        .map(XColor::colorize)
-        .ifPresent(this.builder::setLore);
+      data.get(Keys.DISPLAY_NAME_KEY, String.class).ifPresent(name -> {
+        try {
+          this.builder.setNameAsComponent(MiniMessage.get().deserialize(name));
+        } catch (final Exception e) {
+          this.builder.setName(XColor.colorize(name));
+        }
+      });
+      data.getAsCollection(Keys.LORE_KEY, String.class).ifPresent(lore -> {
+        try {
+          final var miniMessage = MiniMessage.get();
+          final var list = new ArrayList<Component>();
+          for (final var s : lore) {
+            list.add(miniMessage.deserialize(s));
+          }
+          this.builder.setLoreAsComponent(list);
+        } catch (final Exception e) {
+          this.builder.setLore(XColor.colorize(lore));
+        }
+      });
       data.getAsMap(Keys.ENCHANTMENT_KEY, String.class, Integer.class)
         .ifPresent(this.builder::addSerializedEnchantments);
       data.getAsCollection(Keys.FLAG_KEY, String.class)
