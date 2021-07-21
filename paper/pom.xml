@@ -113,8 +113,8 @@
       <artifactId>groupmanagerx</artifactId>
     </dependency>
     <dependency>
-      <groupId>ru.tehkode</groupId>
-      <artifactId>PermissionsEx</artifactId>
+      <groupId>ca.stellardrift.permissionsex</groupId>
+      <artifactId>permissionsex-bukkit</artifactId>
     </dependency>
     <dependency>
       <groupId>com.sk89q.worldguard</groupId>
