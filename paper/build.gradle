@@ -40,5 +40,4 @@ shadowJar {
     archiveClassifier.set("")
     archiveVersion.set("${project.version}")
     archiveBaseName.set("InfumiaLibraryPlugin")
-    setDestinationDir(new File("C:\\Users\\hasan\\Downloads\\server\\plugins"))
 }
