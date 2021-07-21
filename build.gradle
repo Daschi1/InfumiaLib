@@ -1,33 +1,53 @@
 plugins {
-    id 'java'
-    id 'com.github.johnrengelman.shadow' version '7.0.0' apply false
-    id 'io.github.slimjar' version '1.2.1' apply false
+    id "java"
+    id "com.github.johnrengelman.shadow" version "7.0.0" apply false
     id "io.spring.dependency-management" version "1.0.11.RELEASE" apply false
+    id "io.github.slimjar" version "1.2.1" apply false
 }
 
-group 'tr.com.infumia'
+allprojects {
+    group "tr.com.infumia"
 
-subprojects {
-    apply plugin: 'java'
-    apply plugin: 'com.github.johnrengelman.shadow'
-    apply plugin: 'io.github.slimjar'
-    apply plugin: 'io.spring.dependency-management'
+    compileJava {
+        options.encoding "UTF-8"
+    }
 
-    dependencyManagement {
-        dependencies {
-            dependency 'io.github.parentpom:ppom:3.4.38'
+    tasks.withType(JavaCompile) {
+        options.encoding "UTF-8"
+    }
+
+    javadoc {
+        options.encoding "UTF-8"
+    }
+
+    repositories {
+        maven {
+            url "https://repo.vshnv.tech/snapshots"
         }
     }
+}
+
+subprojects {
+    apply plugin: "java"
+    apply plugin: "com.github.johnrengelman.shadow"
+    apply plugin: "io.spring.dependency-management"
+    apply plugin: "io.github.slimjar"
 
     repositories {
         mavenCentral()
     }
 
-    dependencies {
-        compileOnly 'org.projectlombok:lombok'
-        compileOnly 'org.jetbrains:annotations'
+    dependencyManagement {
+        imports {
+            mavenBom "io.github.parentpom:ppom:3.4.38"
+        }
+    }
 
-        annotationProcessor 'org.projectlombok:lombok'
-        annotationProcessor 'org.jetbrains:annotations'
+    dependencies {
+        compileOnly "org.projectlombok:lombok"
+        compileOnly "org.jetbrains:annotations"
+
+        annotationProcessor "org.projectlombok:lombok"
+        annotationProcessor "org.jetbrains:annotations"
     }
 }
