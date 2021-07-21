@@ -1,12 +1,33 @@
 plugins {
     id 'java'
+    id 'com.github.johnrengelman.shadow' version '7.0.0' apply false
+    id 'io.github.slimjar' version '1.2.1' apply false
+    id "io.spring.dependency-management" version "1.0.11.RELEASE" apply false
 }
 
 group 'tr.com.infumia'
 
-repositories {
-    mavenCentral()
-}
+subprojects {
+    apply plugin: 'java'
+    apply plugin: 'com.github.johnrengelman.shadow'
+    apply plugin: 'io.github.slimjar'
+    apply plugin: 'io.spring.dependency-management'
 
-dependencies {
+    dependencyManagement {
+        dependencies {
+            dependency 'io.github.parentpom:ppom:3.4.38'
+        }
+    }
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        compileOnly 'org.projectlombok:lombok'
+        compileOnly 'org.jetbrains:annotations'
+
+        annotationProcessor 'org.projectlombok:lombok'
+        annotationProcessor 'org.jetbrains:annotations'
+    }
 }
