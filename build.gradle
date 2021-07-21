@@ -48,7 +48,7 @@ subprojects {
     }
 
     dependencies {
-        slim "io.github.slimjar:slimjar:1.2.5-SNAPSHOT"
+        compileOnly "io.github.slimjar:slimjar:1.2.5-SNAPSHOT"
         compileOnly "org.projectlombok:lombok"
         compileOnly "org.jetbrains:annotations"
 
