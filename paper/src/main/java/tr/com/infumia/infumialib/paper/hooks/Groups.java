@@ -48,20 +48,10 @@ public class Groups {
    * @return {@code true} if the player has the group.
    */
   public boolean containsGroup(@NotNull final String group, @NotNull final Player player) {
-    if (Hooks.supportsGroupManager()) {
-      return Hooks.getGroupManagerOrThrow().getGroup(player.getWorld().getName(), player)
-        .orElse("")
-        .equalsIgnoreCase(group);
-    }
     if (Hooks.supportsLuckPerms()) {
       return Hooks.getLuckPermsOrThrow().getGroup(player.getWorld().getName(), player)
         .orElse("")
         .equalsIgnoreCase(group);
-    }
-    if (Hooks.supportsPermissionsEx()) {
-      return Hooks.getPermissionsExOrThrow().getGroups(player.getWorld().getName(), player)
-        .orElse(new ArrayList<>())
-        .contains(group);
     }
     return false;
   }
@@ -79,14 +69,8 @@ public class Groups {
    */
   public long getEffectiveLimitedPermission(@NotNull final String permission, @NotNull final Player player,
                                             final long defaultValue) {
-    if (Hooks.supportsGroupManager()) {
-      return Hooks.getGroupManagerOrThrow().getEffectiveLimitedPermission(permission, player, defaultValue);
-    }
     if (Hooks.supportsLuckPerms()) {
       return Hooks.getLuckPermsOrThrow().getEffectiveLimitedPermission(permission, player, defaultValue);
-    }
-    if (Hooks.supportsPermissionsEx()) {
-      return Hooks.getPermissionsExOrThrow().getEffectiveLimitedPermission(permission, player, defaultValue);
     }
     final var calculatedLimit = new AtomicLong(defaultValue);
     final var permissions = new ArrayList<String>();
@@ -108,16 +92,8 @@ public class Groups {
    */
   @NotNull
   public Optional<String> getFirstGroup(@NotNull final Player player) {
-    if (Hooks.supportsGroupManager()) {
-      return Hooks.getGroupManagerOrThrow().getGroup(player.getWorld().getName(), player);
-    }
     if (Hooks.supportsLuckPerms()) {
       return Hooks.getLuckPermsOrThrow().getGroup(player.getWorld().getName(), player);
-    }
-    if (Hooks.supportsPermissionsEx()) {
-      return Hooks.getPermissionsExOrThrow().getGroups(player.getWorld().getName(), player)
-        .filter(strings -> !strings.isEmpty())
-        .map(strings -> strings.get(0));
     }
     return Optional.empty();
   }
