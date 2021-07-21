@@ -2,9 +2,15 @@ package tr.com.infumia.infumialib.paper;
 
 import cloud.commandframework.execution.CommandExecutionCoordinator;
 import cloud.commandframework.paper.PaperCommandManager;
+import io.github.slimjar.app.builder.ApplicationBuilder;
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.nio.file.Paths;
+import java.security.NoSuchAlgorithmException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.logging.Level;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.ServicePriority;
@@ -128,6 +134,7 @@ public final class InfumiaLib extends JavaPlugin {
     InfumiaLib.instance = this;
     CustomColors.registerAll();
     TaskUtilities.init(this);
+    this.loadDependencies();
     this.loadFiles();
   }
 
@@ -153,5 +160,24 @@ public final class InfumiaLib extends JavaPlugin {
     }
     this.worldBorderApi = new PersistenceWrapper(this, this.worldBorderApi);
     this.getServer().getServicesManager().register(WorldBorderApi.class, this.worldBorderApi, this, ServicePriority.High);
+  }
+
+  /**
+   * loads Infumia Library's dependencies.
+   */
+  private void loadDependencies() {
+    this.getLogger().log(Level.INFO, "Loading dependencies, this might take a while...");
+    try {
+      ApplicationBuilder.appending("InfumiaLibrary")
+//        .logger((message, args) -> this.getLogger().log(Level.INFO, message, args))
+        .downloadDirectoryPath(Paths.get(this.getDataFolder().getAbsolutePath()).resolve("libs"))
+        .build();
+    } catch (final IOException | ReflectiveOperationException | URISyntaxException | NoSuchAlgorithmException e) {
+      this.getLogger().log(Level.SEVERE, e, () -> String.format("%s-v%s",
+        this.getClass().getSimpleName(), this.getDescription().getVersion()));
+      this.getLogger().log(Level.SEVERE, "Infumia Library failed to load its dependencies correctly!");
+      this.getLogger().log(Level.SEVERE, "This error should be reported at https://github.com/Infumia/InfumiaLib/issues");
+      this.onDisable();
+    }
   }
 }

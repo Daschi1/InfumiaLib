@@ -1,0 +1,7 @@
+dependencies {
+    // From Common
+    implementation project(":common")
+
+    // From Velocity
+    compileOnly "com.velocitypowered:velocity-api:3.0.0"
+}
