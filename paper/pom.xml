@@ -109,14 +109,6 @@
       <artifactId>level</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.anjocaido</groupId>
-      <artifactId>groupmanagerx</artifactId>
-    </dependency>
-    <dependency>
-      <groupId>ca.stellardrift.permissionsex</groupId>
-      <artifactId>permissionsex-bukkit</artifactId>
-    </dependency>
-    <dependency>
       <groupId>com.sk89q.worldguard</groupId>
       <artifactId>worldguard-bukkit</artifactId>
       <exclusions>

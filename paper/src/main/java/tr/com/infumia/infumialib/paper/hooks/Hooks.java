@@ -16,14 +16,10 @@ import tr.com.infumia.infumialib.paper.hooks.hooks.CitizensHook;
 import tr.com.infumia.infumialib.paper.hooks.hooks.CitizensWrapper;
 import tr.com.infumia.infumialib.paper.hooks.hooks.CombatLogXHook;
 import tr.com.infumia.infumialib.paper.hooks.hooks.CombatLogXWrapper;
-import tr.com.infumia.infumialib.paper.hooks.hooks.GroupManagerHook;
-import tr.com.infumia.infumialib.paper.hooks.hooks.GroupManagerWrapper;
 import tr.com.infumia.infumialib.paper.hooks.hooks.HolographicDisplaysHook;
 import tr.com.infumia.infumialib.paper.hooks.hooks.HolographicDisplaysWrapper;
 import tr.com.infumia.infumialib.paper.hooks.hooks.LuckPermsHook;
 import tr.com.infumia.infumialib.paper.hooks.hooks.LuckPermsWrapper;
-import tr.com.infumia.infumialib.paper.hooks.hooks.PermissionsExHook;
-import tr.com.infumia.infumialib.paper.hooks.hooks.PermissionsExWrapper;
 import tr.com.infumia.infumialib.paper.hooks.hooks.PlaceholderAPIWrapper;
 import tr.com.infumia.infumialib.paper.hooks.hooks.PlaceholderApiHook;
 import tr.com.infumia.infumialib.paper.hooks.hooks.VaultHook;
@@ -45,8 +41,6 @@ public class Hooks {
     new PlaceholderApiHook(),
     new VaultHook(),
     new BentoBoxHook(),
-    new GroupManagerHook(),
-    new PermissionsExHook(),
     new CitizensHook(),
     new HolographicDisplaysHook(),
     new CombatLogXHook(),
@@ -133,26 +127,6 @@ public class Hooks {
   }
 
   /**
-   * obtains the group manager wrapper.
-   *
-   * @return group manager wrapper.
-   */
-  @NotNull
-  public Optional<GroupManagerWrapper> getGroupManager() {
-    return Hooks.getWrapper(GroupManagerHook.GROUP_MANAGER_ID);
-  }
-
-  /**
-   * obtains the group manager wrapper.
-   *
-   * @return group manager wrapper.
-   */
-  @NotNull
-  public GroupManagerWrapper getGroupManagerOrThrow() {
-    return Hooks.getGroupManager().orElseThrow();
-  }
-
-  /**
    * obtains the holographic displays wrapper.
    *
    * @return holographic displays wrapper.
@@ -190,26 +164,6 @@ public class Hooks {
   @NotNull
   public LuckPermsWrapper getLuckPermsOrThrow() {
     return Hooks.getLuckPerms().orElseThrow();
-  }
-
-  /**
-   * obtains the permissions ex wrapper.
-   *
-   * @return permissions ex wrapper.
-   */
-  @NotNull
-  public Optional<PermissionsExWrapper> getPermissionsEx() {
-    return Hooks.getWrapper(PermissionsExHook.PERMISSIONS_EX_ID);
-  }
-
-  /**
-   * obtains the permissions ex wrapper.
-   *
-   * @return permissions ex wrapper.
-   */
-  @NotNull
-  public PermissionsExWrapper getPermissionsExOrThrow() {
-    return Hooks.getPermissionsEx().orElseThrow();
   }
 
   /**
@@ -307,15 +261,6 @@ public class Hooks {
   }
 
   /**
-   * checks if the group manager is supported.
-   *
-   * @return {@code true} if group manager is supported.
-   */
-  public boolean supportsGroupManager() {
-    return Hooks.getGroupManager().isPresent();
-  }
-
-  /**
    * checks if the holographic displays is supported.
    *
    * @return {@code true} if holographic displays is supported.
@@ -331,15 +276,6 @@ public class Hooks {
    */
   public boolean supportsLuckPerms() {
     return Hooks.getLuckPerms().isPresent();
-  }
-
-  /**
-   * checks if the permissions ex is supported.
-   *
-   * @return {@code true} if permissions ex is supported.
-   */
-  public boolean supportsPermissionsEx() {
-    return Hooks.getPermissionsEx().isPresent();
   }
 
   /**
